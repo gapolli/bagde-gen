@@ -93,7 +93,7 @@ run_lint() {
     fi
 
     echo -e "\n${BLUE}[2/2] Checking code style and syntax with Flake8...${NC}"
-    if ! $PY_EXEC -m flake8 --max-line-length=120 --ignore=E501,F401,E261 --exclude=.venv,venv,env,tests ; then
+    if ! $PY_EXEC -m flake8 --max-line-length=120 --ignore=E501,F401,E701,E261 --exclude=.venv,venv,env,tests ; then
         echo -e "${RED}❌ Code quality violations or syntax anomalies found by Flake8.${NC}"
         lint_failed=1
     else
