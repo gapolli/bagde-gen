@@ -14,7 +14,10 @@ NC='\033[0m'
 
 # --- AUTOMATIC PYTHON EXECUTABLE DETECTOR ---
 # Dynamically resolves whether to use a local virtual environment or the global system Python
-if [ -f ".venv/bin/python3" ]; then
+if [ "$CI" = "true" ] || [ -n "$GITHUB_ACTIONS" ]; then
+    # 🚀 FIXED: In CI/CD pipelines, use the default active python command provided by actions/setup-python
+    PY_EXEC="python"
+elif [ -f ".venv/bin/python3" ]; then
     PY_EXEC=".venv/bin/python3"
 elif [ -f "venv/bin/python3" ]; then
     PY_EXEC="venv/bin/python3"
