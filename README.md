@@ -1,7 +1,11 @@
 # 🛡️ Badge Gen
 <!-- BADGES_START -->
 <p align="center">
-  ![Badge](https://shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white) ![Badge](https://shields.io/badge/Bash-5.2-4EAA25?style=flat-square&logo=bash&logoColor=white) ![Badge](https://shields.io/badge/Open--Source-Community-success?style=flat-square&logo=open-source&logoColor=white) ![Badge](https://shields.io/badge/Maintained-Yes-blue?style=flat-square&logo=maintained&logoColor=white) ![Badge](https://shields.io/badge/Contributions-welcome-green?style=flat-square&logo=contributions&logoColor=white)
+  <img src="https://shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Bash-5.2-4EAA25?style=flat-square&logo=bash&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Open--Source-Community-success?style=flat-square&logo=open-source&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Maintained-Yes-blue?style=flat-square&logo=maintained&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Contributions-welcome-green?style=flat-square&logo=contributions&logoColor=white" alt="Badge" />
 </p>
 <!-- BADGES_END -->
 
@@ -136,6 +140,10 @@ Map and construct an entirely localized group of multi-tier badges reading from 
 ## 🤖 CI/CD Automation
 <!-- BADGES_START -->
 <p align="center">
-  ![Badge](https://shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white) ![Badge](https://shields.io/badge/Bash-5.2-4EAA25?style=flat-square&logo=bash&logoColor=white) ![Badge](https://shields.io/badge/Open--Source-Community-success?style=flat-square&logo=open-source&logoColor=white) ![Badge](https://shields.io/badge/Maintained-Yes-blue?style=flat-square&logo=maintained&logoColor=white) ![Badge](https://shields.io/badge/Contributions-welcome-green?style=flat-square&logo=contributions&logoColor=white)
+  <img src="https://shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Bash-5.2-4EAA25?style=flat-square&logo=bash&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Open--Source-Community-success?style=flat-square&logo=open-source&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Maintained-Yes-blue?style=flat-square&logo=maintained&logoColor=white" alt="Badge" />
+  <img src="https://shields.io/badge/Contributions-welcome-green?style=flat-square&logo=contributions&logoColor=white" alt="Badge" />
 </p>
 <!-- BADGES_END -->

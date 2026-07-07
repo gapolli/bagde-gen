@@ -117,7 +117,10 @@ run_tests() {
 }
 
 add_to_top() {
-    if [ ! -f "$OUTPUT_DEFAULT" ]; then touch "$OUTPUT_DEFAULT"; fi
+    if [ ! -f "$OUTPUT_DEFAULT" ]; then 
+        echo -e "${YELLOW}⚠️ '$OUTPUT_DEFAULT' target not found. Creating empty skeleton...${NC}"
+        touch "$OUTPUT_DEFAULT"
+    fi
     
     if ! grep -q "<!-- BADGES_START -->" "$OUTPUT_DEFAULT"; then
         echo -e "${BLUE}🔄 Injecting structural markdown anchors into $OUTPUT_DEFAULT...${NC}"
@@ -136,7 +139,13 @@ add_to_top() {
     for cmd_string in "$@"; do
         local single_badge
         single_badge=$(./badge_gen.sh "$STYLE_DEFAULT" $cmd_string 2>/dev/null | grep -E '^\[\!\[Badge\]|^\[\!\[|^\!\[Badge\]')
-        if [ -n "$single_badge" ]; then temp_badges+="$single_badge "; fi
+        
+        if [ -n "$single_badge" ]; then
+            # 🚀 CONVERSÃO PARA HTML PURO: Extrai a URL do formato ![Badge](URL) e converte em <img />
+            local clean_url
+            clean_url=$(echo "$single_badge" | sed -E 's/.*\!\[Badge\]\(([^)]+)\).*/\1/')
+            temp_badges+="  <img src=\"$clean_url\" alt=\"Badge\" />\n"
+        fi
     done
 
     if [ -z "$temp_badges" ]; then 
@@ -144,8 +153,8 @@ add_to_top() {
         exit 1
     fi
     
-    temp_badges=$(echo "$temp_badges" | xargs)
-    local center_block="<!-- BADGES_START -->\n<p align=\"center\">\n  ${temp_badges}\n</p>\n<!-- BADGES_END -->"
+    # Reconstrói o bloco do topo usando tags HTML nativas que o GitHub aceita centralizar
+    local center_block="<!-- BADGES_START -->\n<p align=\"center\">\n${temp_badges}</p>\n<!-- BADGES_END -->"
 
     local temp_file=$(mktemp)
     awk -v content="$center_block" '
@@ -154,7 +163,7 @@ add_to_top() {
     !inside { print }
     ' "$OUTPUT_DEFAULT" > "$temp_file"
     mv "$temp_file" "$OUTPUT_DEFAULT"
-    echo -e "${GREEN}🎉 Success! Header badges centered and synced without breaking the document structure.${NC}"
+    echo -e "${GREEN}🎉 Success! Header badges centered and synced natively using pure HTML tags.${NC}"
 }
 
 audit_environment() {
