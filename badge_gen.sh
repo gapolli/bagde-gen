@@ -15,12 +15,15 @@ NC='\033[0m'
 # --- AUTOMATIC PYTHON EXECUTABLE DETECTOR ---
 # Dynamically resolves whether to use a local virtual environment or the global system Python
 if [ "$CI" = "true" ] || [ -n "$GITHUB_ACTIONS" ]; then
-    # 🚀 FIXED: In CI/CD pipelines, use the default active python command provided by actions/setup-python
     PY_EXEC="python"
 elif [ -f ".venv/bin/python3" ]; then
     PY_EXEC=".venv/bin/python3"
 elif [ -f "venv/bin/python3" ]; then
     PY_EXEC="venv/bin/python3"
+elif python -m black --version &>/dev/null; then
+    PY_EXEC="python"
+elif python3 -m black --version &>/dev/null; then
+    PY_EXEC="python3"
 else
     PY_EXEC="python3"
 fi
@@ -84,9 +87,12 @@ run_lint() {
     echo -e "${BLUE}🧹 Running automated code quality checks (black & flake8) via ($PY_EXEC)...${NC}"
     local lint_failed=0
 
-    echo -e "\n${BLUE}[1/2] Checking code formatting with Black...${NC}"
+    echo -e "\n${BLUE}[1/2] Applying and checking code formatting with Black...${NC}"
+
+    $PY_EXEC -m black .
+    
     if ! $PY_EXEC -m black --check . ; then
-        echo -e "${YELLOW}⚠️ Formatting issues detected. You can fix them automatically by running: $PY_EXEC -m black .${NC}"
+        echo -e "${YELLOW}⚠️ Formatting issues detected.${NC}"
         lint_failed=1
     else
         echo -e "${GREEN}✨ Code formatting is perfectly compliant with Black standards!${NC}"
