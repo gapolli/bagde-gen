@@ -1,0 +1,32 @@
+# Private Secrets & Environment Credentials
+.env
+.env.backup
+*.env.*
+
+# Python Testing Residue & Coverage Outputs
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mote/
+
+# Python Compilation Artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dependency Managers & Virtual Environments
+.venv/
+venv/
+env/
+dist/
+build/
+*.egg-info/
+
+# System & Editor Profiles
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.bak

@@ -1,0 +1,58 @@
+name: CI/CD Badge Automation Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  quality-and-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Project Dependencies
+        run: make install
+
+      - name: Run Code Quality Checks (Linter)
+        run: make lint
+
+      - name: Run Unit & Integration Tests
+        run: make test
+
+      - name: Generate and Inject Relevant Top Badges Inline
+        run: make top
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean Testing Cache Artifacts
+        run: make clean
+
+      - name: Commit & Push Updated Documentation
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: automated inline badges refresh [skip ci]"
+          file_pattern: "README.md"
+
+      - name: Notify Build Failure via Webhook
+        if: failure()
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE="❌ Pipeline execution failed on branch *${{ github.ref_name }}*. Check logs immediately: $RUN_URL"
+          python3 -c "import badge_gen; badge_gen.send_webhook('CI/CD Failure Alert', '$MESSAGE')"
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
+      - name: Create and Push New Release Tag
+        if: success() && github.ref == 'refs/heads/main'
+        run: make tag
