@@ -121,17 +121,6 @@ add_to_top() {
         echo -e "${YELLOW}⚠️ '$OUTPUT_DEFAULT' target not found. Creating empty skeleton...${NC}"
         touch "$OUTPUT_DEFAULT"
     fi
-    
-    if ! grep -q "<!-- BADGES_START -->" "$OUTPUT_DEFAULT"; then
-        echo -e "${BLUE}🔄 Injecting structural markdown anchors into $OUTPUT_DEFAULT...${NC}"
-        local temp_init=$(mktemp)
-        awk '/^[[:space:]]*#[[:space:]]+/ { print; print "<!-- BADGES_START -->\n<!-- BADGES_END -->"; next } { print }' "$OUTPUT_DEFAULT" > "$temp_init"
-        if ! grep -q "<!-- BADGES_START -->" "$temp_init"; then
-            echo -e "<!-- BADGES_START -->\n<!-- BADGES_END -->\n" > "$temp_init"
-            cat "$OUTPUT_DEFAULT" >> "$temp_init"
-        fi
-        mv "$temp_init" "$OUTPUT_DEFAULT"
-    fi
 
     local temp_badges=""
     echo -e "${BLUE}🛡️  Generating dynamic structural badges using '${STYLE_DEFAULT}' style...${NC}"
@@ -141,7 +130,6 @@ add_to_top() {
         single_badge=$(./badge_gen.sh "$STYLE_DEFAULT" $cmd_string 2>/dev/null | grep -E '^\[\!\[Badge\]|^\[\!\[|^\!\[Badge\]')
         
         if [ -n "$single_badge" ]; then
-            # 🚀 CONVERSÃO PARA HTML PURO: Extrai a URL do formato ![Badge](URL) e converte em <img />
             local clean_url
             clean_url=$(echo "$single_badge" | sed -E 's/.*\!\[Badge\]\(([^)]+)\).*/\1/')
             temp_badges+="  <img src=\"$clean_url\" alt=\"Badge\" />\n"
@@ -153,17 +141,37 @@ add_to_top() {
         exit 1
     fi
     
-    # Reconstrói o bloco do topo usando tags HTML nativas que o GitHub aceita centralizar
     local center_block="<!-- BADGES_START -->\n<p align=\"center\">\n${temp_badges}</p>\n<!-- BADGES_END -->"
 
-    local temp_file=$(mktemp)
-    awk -v content="$center_block" '
-    /<!-- BADGES_START -->/ { inside=1; print content; next } 
-    /<!-- BADGES_END -->/ { inside=0; next } 
-    !inside { print }
-    ' "$OUTPUT_DEFAULT" > "$temp_file"
-    mv "$temp_file" "$OUTPUT_DEFAULT"
-    echo -e "${GREEN}🎉 Success! Header badges centered and synced natively using pure HTML tags.${NC}"
+    local final_file=$(mktemp)
+    
+    awk -v badges="$center_block" '
+    BEGIN { inside_old_badges=0; title_passed=0; injected=0 }
+
+    /^[[:space:]]*#[[:space:]]+/ && title_passed==0 {
+        print;
+        print "\n" badges;
+        title_passed=1;
+        injected=1;
+        next
+    }
+
+    /<!-- BADGES_START -->/ && title_passed==1 && injected==1 && NR<15 {
+        inside_old_badges=1;
+        next
+    }
+    /<!-- BADGES_END -->/ && inside_old_badges==1 {
+        inside_old_badges=0;
+        next
+    }
+
+    !inside_old_badges {
+        print
+    }
+    ' "$OUTPUT_DEFAULT" > "$final_file"
+    
+    mv "$final_file" "$OUTPUT_DEFAULT"
+    echo -e "${GREEN}🎉 Success! Header badges synchronized safely at the top without altering body text entries.${NC}"
 }
 
 audit_environment() {

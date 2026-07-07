@@ -1,4 +1,5 @@
 # 🛡️ Badge Gen
+
 <!-- BADGES_START -->
 <p align="center">
   <img src="https://shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Badge" />
