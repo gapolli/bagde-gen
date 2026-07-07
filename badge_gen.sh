@@ -164,7 +164,7 @@ add_to_top() {
         inside_old_badges=0;
         next
     }
-
+ 
     !inside_old_badges {
         print
     }
