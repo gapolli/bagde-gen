@@ -53,6 +53,8 @@ top:
 	@./badge_gen.sh $(STYLE) top "license" "tech Python 3.12" "tech Bash 5.2 4EAA25" "tech Open-Source Community success" "tech Maintained Yes blue" "tech Contributions welcome green"
 
 tag:
+	@echo "🏷️  Synchronizing tags with remote repository..."
+	@git fetch --tags --force
 	@echo "🏷️  Calculating next semantic version tag..."
 	@LATEST_TAG=$$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0"); \
 	echo "   Latest version found: $$LATEST_TAG"; \
