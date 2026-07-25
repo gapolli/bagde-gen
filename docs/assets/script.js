@@ -2,7 +2,7 @@
   "use strict";
 
   var REPO_OWNER = "gapolli";
-  var REPO_NAME = "bagde-gen";
+  var REPO_NAME = "badge-gen";
 
   /* ============================================================
      1. THEME TOGGLE
