@@ -12,6 +12,7 @@
 
 
 
+
 A Command Line Interface (CLI) and Bash orchestration framework designed to automate the generation of dynamic and static badges for GitHub documentation. This toolkit bridges the gap between daily developer usage and hands-off CI/CD pipeline automation.
 
 ## 📁 Project Structure
