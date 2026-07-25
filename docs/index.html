@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Badge Gen — Automated GitHub Badges CLI</title>
+    <meta
+      name="description"
+      content="A CLI and Bash orchestration framework for automating dynamic and static GitHub badges with CI/CD native integration."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>"
+    />
+
+    <!-- TAILWIND CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              mono: ["JetBrains Mono", "Consolas", "monospace"],
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+            colors: {
+              term: {
+                green: "#3fb950",
+                yellow: "#d29922",
+                blue: "#58a6ff",
+                red: "#ff5f57",
+                dim: "#8b949e",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CUSTOM STYLES -->
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body class="bg-gray-900 text-gray-100 font-sans antialiased">
+    <!-- NAVBAR -->
+    <nav
+      class="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800"
+    >
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center"
+      >
+        <a
+          href="#"
+          class="font-mono font-bold text-lg text-gray-100 hover:text-term-green transition-colors"
+        >
+          🛡️ badge_gen
+        </a>
+        <div class="flex items-center gap-4">
+          <a
+            href="#builder"
+            class="hidden sm:inline text-sm text-gray-400 hover:text-gray-100 transition-colors"
+            >builder</a
+          >
+          <a
+            href="#cli-demo"
+            class="hidden sm:inline text-sm text-gray-400 hover:text-gray-100 transition-colors"
+            >cli</a
+          >
+          <a
+            href="#projects"
+            class="hidden sm:inline text-sm text-gray-400 hover:text-gray-100 transition-colors"
+            >gallery</a
+          >
+          <a
+            href="https://github.com/gapolli/bagde-gen"
+            target="_blank"
+            rel="noopener"
+            class="text-sm text-gray-400 hover:text-gray-100 transition-colors"
+            >github ↗</a
+          >
+          <button
+            id="themeToggle"
+            class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm hover:border-gray-600 transition-colors"
+            aria-label="Toggle theme"
+          >
+            <span class="theme-icon-dark">🌙</span>
+            <span class="theme-icon-light hidden">☀️</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-16 text-center">
+      <p class="font-mono text-sm text-term-green mb-3">
+        // CLI Framework for GitHub Badge Automation
+      </p>
+      <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">🛡️ Badge Gen</h1>
+      <p class="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
+        A CLI and Bash orchestration framework for automating dynamic and static
+        GitHub badges with CI/CD native integration, Snyk security, and
+        multi-platform metrics.
+      </p>
+
+      <!-- Terminal-style loading message -->
+      <p class="font-mono text-xs text-term-dim mb-6">
+        <span class="text-term-green">$</span> Injecting badge assets from local
+        repository cache...
+      </p>
+
+      <!-- Live badges -->
+      <div class="flex flex-wrap gap-2 justify-center mb-8">
+        <img
+          src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white"
+          alt="Python"
+        />
+        <img
+          src="https://img.shields.io/badge/Bash-5.x-4EAA25?logo=gnubash&logoColor=white"
+          alt="Bash"
+        />
+        <img
+          src="https://img.shields.io/badge/CI-passing-brightgreen?logo=githubactions&logoColor=white"
+          alt="CI"
+        />
+        <img
+          src="https://img.shields.io/badge/license-MIT-blue"
+          alt="License"
+        />
+      </div>
+
+      <!-- CTA -->
+      <div class="flex flex-wrap gap-4 justify-center mb-8">
+        <a
+          href="https://github.com/gapolli/bagde-gen"
+          target="_blank"
+          rel="noopener"
+          class="bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 text-gray-100 font-semibold px-6 py-3 rounded-lg transition-all"
+        >
+          ⭐ Star on GitHub
+        </a>
+        <a
+          href="#builder"
+          class="bg-term-green/10 hover:bg-term-green/20 border border-term-green/30 hover:border-term-green/50 text-term-green font-semibold px-6 py-3 rounded-lg transition-all"
+        >
+          🎯 Try the Builder
+        </a>
+        <a
+          href="#cli-demo"
+          class="bg-transparent hover:bg-gray-800 border border-gray-700 text-gray-400 hover:text-gray-100 font-semibold px-6 py-3 rounded-lg transition-all"
+        >
+          💻 CLI Demo
+        </a>
+      </div>
+
+      <!-- Repo stats -->
+      <div
+        id="repoStats"
+        class="flex flex-wrap gap-3 justify-center text-sm text-gray-500"
+      >
+        <span
+          class="bg-gray-800/50 border border-gray-800 rounded-lg px-3 py-1.5"
+          >⭐ <span id="starCount">…</span> stars</span
+        >
+        <span
+          class="bg-gray-800/50 border border-gray-800 rounded-lg px-3 py-1.5"
+          >🍴 <span id="forkCount">…</span> forks</span
+        >
+        <span
+          class="bg-gray-800/50 border border-gray-800 rounded-lg px-3 py-1.5"
+          >🐛 <span id="issueCount">…</span> issues</span
+        >
+      </div>
+    </header>
+
+    <!-- FEATURES -->
+    <section id="features" class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+      <p class="font-mono text-sm text-term-green mb-2">// core_capabilities</p>
+      <h2 class="text-2xl font-bold mb-10">Features</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          class="feature-card bg-gray-800/50 border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all"
+        >
+          <span class="text-2xl block mb-3">⚡</span>
+          <h3 class="font-semibold mb-2">CLI + Bash Wrapper</h3>
+          <p class="text-gray-400 text-sm">
+            Core Python engine with an adaptive Bash orchestrator interface for
+            flexible invocation.
+          </p>
+        </div>
+        <div
+          class="feature-card bg-gray-800/50 border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all"
+        >
+          <span class="text-2xl block mb-3">🤖</span>
+          <h3 class="font-semibold mb-2">CI/CD Native</h3>
+          <p class="text-gray-400 text-sm">
+            Auto-detects GitHub Actions environment, suppresses local alerts,
+            integrates into pipelines.
+          </p>
+        </div>
+        <div
+          class="feature-card bg-gray-800/50 border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all"
+        >
+          <span class="text-2xl block mb-3">🎨</span>
+          <h3 class="font-semibold mb-2">Multiple Styles</h3>
+          <p class="text-gray-400 text-sm">
+            Supports
+            <code
+              class="font-mono text-xs bg-term-green/10 text-term-green px-1.5 py-0.5 rounded"
+              >for-the-badge</code
+            >,
+            <code
+              class="font-mono text-xs bg-term-green/10 text-term-green px-1.5 py-0.5 rounded"
+              >flat</code
+            >,
+            <code
+              class="font-mono text-xs bg-term-green/10 text-term-green px-1.5 py-0.5 rounded"
+              >plastic</code
+            >, and more.
+          </p>
+        </div>
+        <div
+          class="feature-card bg-gray-800/50 border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all"
+        >
+          <span class="text-2xl block mb-3">📦</span>
+          <h3 class="font-semibold mb-2">Batch Processing</h3>
+          <p class="text-gray-400 text-sm">
+            Build entire badge sections from a structured JSON blueprint with
+            multi-tier grouping.
+          </p>
+        </div>
+        <div
+          class="feature-card bg-gray-800/50 border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all"
+        >
+          <span class="text-2xl block mb-3">🔒</span>
+          <h3 class="font-semibold mb-2">Snyk Security</h3>
+          <p class="text-gray-400 text-sm">
+            Dynamic vulnerability tracking and security posture badges via Snyk
+            integration.
+          </p>
+        </div>
+        <div
+          class="feature-card bg-gray-800/50 border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all"
+        >
+          <span class="text-2xl block mb-3">📊</span>
+          <h3 class="font-semibold mb-2">Live Metrics</h3>
+          <p class="text-gray-400 text-sm">
+            UptimeRobot latency tracking, build stability, and storage metrics
+            rendered in real time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGE GALLERY -->
+    <section id="projects" class="bg-gray-800/30 border-y border-gray-800">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+        <p class="font-mono text-sm text-term-green mb-2">// badge_gallery</p>
+        <h2 class="text-2xl font-bold mb-2">Badge Gallery</h2>
+        <p class="text-gray-500 text-sm mb-10">
+          Every badge below is generated dynamically — this page is a live demo.
+        </p>
+
+        <div class="mb-8">
+          <h3 class="font-mono text-sm text-term-yellow mb-4">
+            ▸ Static Technology Stack
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            <img
+              src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white"
+            />
+            <img
+              src="https://img.shields.io/badge/Bash-v5-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white"
+            />
+            <img
+              src="https://img.shields.io/badge/GitHub_Actions-v5-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"
+            />
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h3 class="font-mono text-sm text-term-yellow mb-4">
+            ▸ Dynamic Metrics
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            <img
+              src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square"
+            />
+            <img
+              src="https://img.shields.io/badge/tests-100%25-brightgreen?style=flat-square"
+            />
+            <img
+              src="https://img.shields.io/badge/coverage-95%25-green?style=flat-square"
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-mono text-sm text-term-yellow mb-4">
+            ▸ Style Variations
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            <img src="https://img.shields.io/badge/demo-flat-blue" />
+            <img
+              src="https://img.shields.io/badge/demo-flat--square-blue?style=flat-square"
+            />
+            <img
+              src="https://img.shields.io/badge/demo-plastic-blue?style=plastic"
+            />
+            <img
+              src="https://img.shields.io/badge/demo-for--the--badge-blue?style=for-the-badge"
+            />
+            <img
+              src="https://img.shields.io/badge/demo-social-blue?style=social"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE BADGE BUILDER -->
+    <section id="builder" class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+      <p class="font-mono text-sm text-term-green mb-2">
+        // interactive_builder
+      </p>
+      <h2 class="text-2xl font-bold mb-2">🎯 Interactive Badge Builder</h2>
+      <p class="text-gray-500 text-sm mb-10">
+        Configure your badge in real time and copy the generated URL.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Controls -->
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="block text-sm text-gray-400 font-semibold mb-1.5"
+              >Label</label
+            >
+            <input
+              type="text"
+              id="badgeLabel"
+              value="Python"
+              placeholder="e.g. Python"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-gray-100 focus:border-term-green focus:outline-none transition-colors"
+            />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 font-semibold mb-1.5"
+              >Message</label
+            >
+            <input
+              type="text"
+              id="badgeMessage"
+              value="3.12"
+              placeholder="e.g. 3.12"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-gray-100 focus:border-term-green focus:outline-none transition-colors"
+            />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 font-semibold mb-1.5"
+              >Color</label
+            >
+            <div class="flex items-center gap-3">
+              <input
+                type="color"
+                id="badgeColor"
+                value="#3776AB"
+                class="w-11 h-10 border border-gray-700 rounded-lg cursor-pointer bg-gray-800"
+              />
+              <input
+                type="text"
+                id="badgeColorHex"
+                value="3776AB"
+                maxlength="7"
+                class="w-28 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-gray-100 font-mono text-sm focus:border-term-green focus:outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 font-semibold mb-1.5"
+              >Label Color (optional)</label
+            >
+            <input
+              type="color"
+              id="badgeLabelColor"
+              value="#555555"
+              class="w-11 h-10 border border-gray-700 rounded-lg cursor-pointer bg-gray-800"
+            />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 font-semibold mb-1.5"
+              >Style</label
+            >
+            <select
+              id="badgeStyle"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-gray-100 focus:border-term-green focus:outline-none transition-colors"
+            >
+              <option value="flat">flat</option>
+              <option value="flat-square">flat-square</option>
+              <option value="for-the-badge" selected>for-the-badge</option>
+              <option value="plastic">plastic</option>
+              <option value="social">social</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 font-semibold mb-1.5"
+              >Logo (simpleicons.org name)</label
+            >
+            <input
+              type="text"
+              id="badgeLogo"
+              value="python"
+              placeholder="e.g. python, docker, npm"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-gray-100 focus:border-term-green focus:outline-none transition-colors"
+            />
+          </div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <label
+              class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                id="logoColorToggle"
+                checked
+                class="w-4 h-4 accent-term-green cursor-pointer"
+              />
+              Custom logo color
+            </label>
+            <input
+              type="color"
+              id="badgeLogoColor"
+              value="#FFFFFF"
+              class="w-11 h-10 border border-gray-700 rounded-lg cursor-pointer bg-gray-800"
+            />
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="bg-gray-800/50 border border-gray-800 rounded-xl p-8">
+          <h3 class="text-sm text-gray-400 font-semibold mb-3">Live Preview</h3>
+          <div
+            class="bg-gray-900 border border-dashed border-gray-700 rounded-lg p-10 text-center flex items-center justify-center min-h-[100px] mb-6"
+          >
+            <img
+              id="badgePreview"
+              alt="Badge preview"
+              class="max-w-full h-auto"
+            />
+          </div>
+          <h3 class="text-sm text-gray-400 font-semibold mb-3">
+            Generated URL
+          </h3>
+          <div
+            class="flex items-stretch gap-2 mb-6 bg-gray-900 border border-gray-700 rounded-lg overflow-hidden"
+          >
+            <code
+              id="badgeUrl"
+              class="flex-1 font-mono text-xs px-4 py-3 overflow-x-auto whitespace-nowrap text-gray-100"
+            ></code>
+            <button
+              id="copyBtn"
+              class="bg-term-green text-gray-900 px-4 text-xs font-semibold hover:bg-term-green/80 transition-colors whitespace-nowrap"
+            >
+              📋 Copy
+            </button>
+          </div>
+          <h3 class="text-sm text-gray-400 font-semibold mb-3">Markdown</h3>
+          <div
+            class="flex items-stretch gap-2 bg-gray-900 border border-gray-700 rounded-lg overflow-hidden"
+          >
+            <code
+              id="badgeMarkdown"
+              class="flex-1 font-mono text-xs px-4 py-3 overflow-x-auto whitespace-nowrap text-gray-100"
+            ></code>
+            <button
+              id="copyMdBtn"
+              class="bg-term-green text-gray-900 px-4 text-xs font-semibold hover:bg-term-green/80 transition-colors whitespace-nowrap"
+            >
+              📋 Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLI DEMO -->
+    <section id="cli-demo" class="bg-gray-800/30 border-y border-gray-800">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+        <p class="font-mono text-sm text-term-green mb-2">// cli_simulator</p>
+        <h2 class="text-2xl font-bold mb-2">💻 Interactive CLI Simulator</h2>
+        <p class="text-gray-500 text-sm mb-10">
+          Try running commands directly in your browser — simulates the Badge
+          Gen CLI experience.
+        </p>
+
+        <div class="max-w-3xl mx-auto">
+          <div
+            class="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden shadow-2xl"
+          >
+            <!-- Terminal header -->
+            <div
+              class="bg-gray-800/80 px-4 py-3 flex items-center justify-between border-b border-gray-800"
+            >
+              <div class="flex gap-2">
+                <span class="w-3 h-3 rounded-full bg-term-red"></span>
+                <span class="w-3 h-3 rounded-full bg-term-yellow"></span>
+                <span class="w-3 h-3 rounded-full bg-term-green"></span>
+              </div>
+              <span class="font-mono text-xs text-gray-500"
+                >badge_gen — bash — 80×24</span
+              >
+            </div>
+            <!-- Terminal output -->
+            <div
+              id="terminalOutput"
+              class="p-6 min-h-[300px] max-h-[400px] overflow-y-auto font-mono text-sm leading-relaxed"
+            >
+              <div class="mb-2">
+                <span class="text-term-green font-bold">$</span>
+                <span>Welcome to Badge Gen CLI v1.0.0</span>
+              </div>
+              <div class="mb-2">
+                <span class="text-term-green font-bold">$</span> Type 'help' to
+                see available commands.
+              </div>
+              <div class="mb-2">
+                <span class="text-term-green font-bold">$</span> Try:
+                <code
+                  class="bg-gray-800 px-2 py-0.5 rounded text-term-yellow italic"
+                  >generate badge Python 3.12 flat 3776AB</code
+                >
+              </div>
+            </div>
+            <!-- Terminal input -->
+            <div
+              class="flex items-center px-6 py-4 bg-gray-950 border-t border-gray-800"
+            >
+              <span class="text-term-green font-bold mr-2">$</span>
+              <input
+                type="text"
+                id="terminalInput"
+                class="flex-1 bg-transparent border-none text-gray-100 font-mono text-sm outline-none caret-term-green"
+                placeholder="Enter command..."
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <!-- Quick commands -->
+          <div class="flex flex-wrap gap-2 justify-center mt-6 items-center">
+            <span class="text-gray-500 text-xs">Quick Commands:</span>
+            <button
+              class="quick-btn bg-gray-800/50 border border-gray-800 rounded-md px-3 py-1.5 text-gray-300 font-mono text-xs hover:border-gray-600 transition-colors"
+              data-cmd="generate badge Python 3.12 flat 3776AB"
+            >
+              generate badge Python 3.12
+            </button>
+            <button
+              class="quick-btn bg-gray-800/50 border border-gray-800 rounded-md px-3 py-1.5 text-gray-300 font-mono text-xs hover:border-gray-600 transition-colors"
+              data-cmd="generate badge Build passing --color brightgreen"
+            >
+              generate badge Build passing
+            </button>
+            <button
+              class="quick-btn bg-gray-800/50 border border-gray-800 rounded-md px-3 py-1.5 text-gray-300 font-mono text-xs hover:border-gray-600 transition-colors"
+              data-cmd="list templates"
+            >
+              list templates
+            </button>
+            <button
+              class="quick-btn bg-gray-800/50 border border-gray-800 rounded-md px-3 py-1.5 text-gray-300 font-mono text-xs hover:border-gray-600 transition-colors"
+              data-cmd="batch generate config.json"
+            >
+              batch generate
+            </button>
+            <button
+              class="quick-btn bg-gray-800/50 border border-gray-800 rounded-md px-3 py-1.5 text-gray-300 font-mono text-xs hover:border-gray-600 transition-colors"
+              data-cmd="help"
+            >
+              help
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USAGE -->
+    <section id="usage" class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+      <p class="font-mono text-sm text-term-green mb-2">// quick_start</p>
+      <h2 class="text-2xl font-bold mb-10">Quick Start</h2>
+
+      <div
+        class="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden mb-6"
+      >
+        <div
+          class="bg-gray-800/80 px-4 py-3 flex items-center gap-2 border-b border-gray-800"
+        >
+          <span class="w-3 h-3 rounded-full bg-term-red"></span>
+          <span class="w-3 h-3 rounded-full bg-term-yellow"></span>
+          <span class="w-3 h-3 rounded-full bg-term-green"></span>
+          <span class="font-mono text-xs text-gray-500 ml-2">Setup</span>
+        </div>
+        <pre
+          class="p-5 overflow-x-auto"
+        ><code class="font-mono text-sm text-gray-100"># Clone the repository
+git clone https://github.com/gapolli/bagde-gen.git
+cd bagde-gen
+
+# Run automated setup
+make setup
+# or: python badge_gen.py setup</code></pre>
+      </div>
+
+      <div
+        class="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden mb-6"
+      >
+        <div
+          class="bg-gray-800/80 px-4 py-3 flex items-center gap-2 border-b border-gray-800"
+        >
+          <span class="w-3 h-3 rounded-full bg-term-red"></span>
+          <span class="w-3 h-3 rounded-full bg-term-yellow"></span>
+          <span class="w-3 h-3 rounded-full bg-term-green"></span>
+          <span class="font-mono text-xs text-gray-500 ml-2"
+            >Static Badge — Shorthand</span
+          >
+        </div>
+        <pre
+          class="p-5 overflow-x-auto"
+        ><code class="font-mono text-sm text-gray-100"># Shorthand Orchestrator Syntax
+./badge_gen.sh "Python" "3.12" "flat" "3776AB"
+
+# Advanced Core Engine Syntax
+python badge_gen.py --label "Python" --message "3.12" \
+  --logo "python" --style "flat" --color "3776AB"</code></pre>
+      </div>
+
+      <div
+        class="bg-gray-950 border border-gray-800 rounded-xl overflow-hidden"
+      >
+        <div
+          class="bg-gray-800/80 px-4 py-3 flex items-center gap-2 border-b border-gray-800"
+        >
+          <span class="w-3 h-3 rounded-full bg-term-red"></span>
+          <span class="w-3 h-3 rounded-full bg-term-yellow"></span>
+          <span class="w-3 h-3 rounded-full bg-term-green"></span>
+          <span class="font-mono text-xs text-gray-500 ml-2"
+            >Batch Processing from JSON Blueprint</span
+          >
+        </div>
+        <pre
+          class="p-5 overflow-x-auto"
+        ><code class="font-mono text-sm text-gray-100">[
+  {
+    "section": "Production Status",
+    "badges": [
+      { "label": "build", "message": "passing", "color": "brightgreen" },
+      { "label": "uptime", "message": "99.9%", "color": "green" }
+    ]
+  }
+]</code></pre>
+      </div>
+    </section>
+
+    <!-- CI/CD FLOW -->
+    <section id="cicd" class="bg-gray-800/30 border-y border-gray-800">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+        <p class="font-mono text-sm text-term-green mb-2">// pipeline_flow</p>
+        <h2 class="text-2xl font-bold mb-10">CI/CD Pipeline Flow</h2>
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <div
+            class="bg-gray-900 border border-gray-800 rounded-xl px-6 py-5 text-center min-w-[120px] hover:border-gray-600 transition-colors"
+          >
+            <span class="text-2xl block mb-2">📝</span>
+            <p class="text-xs text-gray-400">Push to main</p>
+          </div>
+          <span class="text-term-green text-xl">→</span>
+          <div
+            class="bg-gray-900 border border-gray-800 rounded-xl px-6 py-5 text-center min-w-[120px] hover:border-gray-600 transition-colors"
+          >
+            <span class="text-2xl block mb-2">⚙️</span>
+            <p class="text-xs text-gray-400">Actions trigger</p>
+          </div>
+          <span class="text-term-green text-xl">→</span>
+          <div
+            class="bg-gray-900 border border-gray-800 rounded-xl px-6 py-5 text-center min-w-[120px] hover:border-gray-600 transition-colors"
+          >
+            <span class="text-2xl block mb-2">🧪</span>
+            <p class="text-xs text-gray-400">Lint & Test</p>
+          </div>
+          <span class="text-term-green text-xl">→</span>
+          <div
+            class="bg-gray-900 border border-gray-800 rounded-xl px-6 py-5 text-center min-w-[120px] hover:border-gray-600 transition-colors"
+          >
+            <span class="text-2xl block mb-2">🏷️</span>
+            <p class="text-xs text-gray-400">Tag & Sync</p>
+          </div>
+          <span class="text-term-green text-xl">→</span>
+          <div
+            class="bg-gray-900 border border-gray-800 rounded-xl px-6 py-5 text-center min-w-[120px] hover:border-gray-600 transition-colors"
+          >
+            <span class="text-2xl block mb-2">🔄</span>
+            <p class="text-xs text-gray-400">Badges refresh</p>
+          </div>
+        </div>
+        <p class="text-center text-gray-500 text-sm">
+          Uses
+          <code
+            class="font-mono text-xs bg-term-green/10 text-term-green px-1.5 py-0.5 rounded"
+            >git-auto-commit-action</code
+          >
+          with
+          <code
+            class="font-mono text-xs bg-term-green/10 text-term-green px-1.5 py-0.5 rounded"
+            >[skip ci]</code
+          >
+          to prevent loops.
+        </p>
+      </div>
+    </section>
+
+    <!-- CONTRIBUTORS -->
+    <section id="contributors" class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+      <p class="font-mono text-sm text-term-green mb-2">// contributors</p>
+      <h2 class="text-2xl font-bold mb-2">👥 Contributors</h2>
+      <p class="text-gray-500 text-sm mb-10">
+        Powered by the GitHub API — always up to date.
+      </p>
+      <div
+        id="contributorsGrid"
+        class="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-6"
+      >
+        <div class="col-span-full text-center text-gray-500 py-10">
+          Loading contributors…
+        </div>
+      </div>
+    </section>
+
+    <!-- CHANGELOG -->
+    <section id="changelog" class="bg-gray-800/30 border-y border-gray-800">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+        <p class="font-mono text-sm text-term-green mb-2">// changelog</p>
+        <h2 class="text-2xl font-bold mb-2">📜 Changelog</h2>
+        <p class="text-gray-500 text-sm mb-10">
+          Release timeline fetched live from GitHub Releases.
+        </p>
+        <div id="changelogTimeline" class="relative pl-8">
+          <div class="text-center text-gray-500 py-10">Loading releases…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer
+      class="max-w-5xl mx-auto px-4 sm:px-6 py-12 text-center border-t border-gray-800"
+    >
+      <p class="text-gray-400 mb-3">
+        🛡️ Badge Gen — Built with Python &amp; Bash by
+        <a
+          href="https://github.com/gapolli"
+          class="text-term-green hover:underline"
+          >gapolli</a
+        >
+      </p>
+      <div class="flex gap-6 justify-center flex-wrap mb-4">
+        <a
+          href="https://github.com/gapolli/bagde-gen"
+          class="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+          >Repository</a
+        >
+        <a
+          href="https://github.com/gapolli/bagde-gen/issues"
+          class="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+          >Issues</a
+        >
+        <a
+          href="https://github.com/gapolli/bagde-gen/discussions"
+          class="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+          >Discussions</a
+        >
+        <a
+          href="https://github.com/gapolli/bagde-gen/blob/main/CONTRIBUTING.md"
+          class="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+          >Contributing</a
+        >
+      </div>
+      <p class="font-mono text-xs text-gray-600">
+        This page is statically served via GitHub Pages. All metrics are pulled
+        from live APIs.
+      </p>
+    </footer>
+
+    <!-- TOAST -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 bg-term-green text-gray-900 px-6 py-3 rounded-lg font-semibold text-sm opacity-0 translate-y-5 transition-all z-50 pointer-events-none"
+    ></div>
+
+    <!-- SCRIPT -->
+    <script src="assets/script.js"></script>
+  </body>
+</html>

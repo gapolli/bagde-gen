@@ -1,0 +1,202 @@
+/* ============================================================
+   THEME: Light mode support (dark is default via Tailwind .dark)
+   ============================================================ */
+html:not(.dark) body {
+  background: #f6f8fa;
+  color: #1f2328;
+}
+html:not(.dark) .bg-gray-900 {
+  background-color: #ffffff !important;
+}
+html:not(.dark) .bg-gray-800\/50 {
+  background-color: #f0f2f5 !important;
+}
+html:not(.dark) .bg-gray-800\/30 {
+  background-color: #f0f2f5 !important;
+}
+html:not(.dark) .bg-gray-800 {
+  background-color: #eaeef2 !important;
+}
+html:not(.dark) .bg-gray-800\/80 {
+  background-color: #eaeef2 !important;
+}
+html:not(.dark) .bg-gray-950 {
+  background-color: #f6f8fa !important;
+}
+html:not(.dark) .border-gray-800 {
+  border-color: #d0d7de !important;
+}
+html:not(.dark) .border-gray-700 {
+  border-color: #d0d7de !important;
+}
+html:not(.dark) .text-gray-100 {
+  color: #1f2328 !important;
+}
+html:not(.dark) .text-gray-400 {
+  color: #656d76 !important;
+}
+html:not(.dark) .text-gray-500 {
+  color: #656d76 !important;
+}
+html:not(.dark) .text-gray-600 {
+  color: #8b949e !important;
+}
+html:not(.dark) .hover\:text-gray-100:hover {
+  color: #1f2328 !important;
+}
+html:not(.dark) .hover\:text-gray-300:hover {
+  color: #656d76 !important;
+}
+html:not(.dark) .hover\:bg-gray-700:hover {
+  background-color: #eaeef2 !important;
+}
+html:not(.dark) .hover\:bg-gray-800:hover {
+  background-color: #eaeef2 !important;
+}
+html:not(.dark) .hover\:border-gray-600:hover {
+  border-color: #b1bac4 !important;
+}
+html:not(.dark) .backdrop-blur-md {
+  backdrop-filter: none !important;
+}
+
+/* Theme toggle visibility */
+.theme-icon-light {
+  display: none;
+}
+html:not(.dark) .theme-icon-dark {
+  display: none;
+}
+html:not(.dark) .theme-icon-light {
+  display: inline;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feature-card,
+.contributor-card,
+.timeline-item,
+.gallery-group > div,
+.flow-step,
+.discussion-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.feature-card.visible,
+.contributor-card.visible,
+.timeline-item.visible,
+.gallery-group > div.visible,
+.flow-step.visible,
+.discussion-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   TIMELINE (changelog)
+   ============================================================ */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #30363d;
+}
+
+html:not(.dark) .timeline::before {
+  background: #d0d7de;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3fb950;
+  border: 3px solid #0d1117;
+}
+
+html:not(.dark) .timeline-dot {
+  border-color: #ffffff;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8b949e;
+}
+
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: #f6f8fa;
+}
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #d0d7de;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast.show {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+/* ============================================================
+   COPY BUTTON STATES
+   ============================================================ */
+.btn-copy.copied,
+#copyBtn.copied,
+#copyMdBtn.copied {
+  background: #3fb950 !important;
+  color: #0d1117 !important;
+}
+
+/* ============================================================
+   TERMINAL INPUT CARET
+   ============================================================ */
+.terminal-input::placeholder {
+  color: #484f58;
+}
+
+/* ============================================================
+   RESPONSIVE FLOW ARROWS
+   ============================================================ */
+@media (max-width: 768px) {
+  .flow-arrow,
+  [class*="text-term-green"][class*="text-xl"] {
+    transform: rotate(90deg);
+  }
+}
